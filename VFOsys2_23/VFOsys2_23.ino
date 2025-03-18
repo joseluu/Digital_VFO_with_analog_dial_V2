@@ -108,7 +108,7 @@ void Alt_Thread(void *args) {
     pcnt_get_counter_value(PCNT_UNIT_0, &RE_Count);          
     #ifdef REV_ENCODER
     int count=-RE_Count;
-    #else if
+    #else
     int count=RE_Count;
     #endif
     pcnt_counter_clear(PCNT_UNIT_0);

@@ -10,10 +10,11 @@
 #ifndef DIAL_H
 #define	DIAL_H
 
+#include "prm\ST7789_3.2inch_ESP32-2432S032.hpp"
 //#include "prm\ST7789_240x320.hpp"
 //#include "prm\ST7789_240x240.hpp"
 //#include "prm\ST7789_135x240.hpp"
-#include "prm\ST7735S_128x160.hpp"
+//#include "prm\ST7735S_128x160.hpp"
 //#include "prm\ST7735S_80x160.hpp"
 //#include "prm\ILI9341_240x320.hpp"
 //#include "prm\SSD1331_64x96.hpp"
@@ -68,7 +69,7 @@ class DIAL
     #ifdef MAINDIAL_IS_OUTSIDE
     radiusMain = dial_radius;
     radiusSub  = dial_radius - dial_space;
-    #else if
+    #else
     radiusSub  = dial_radius;
     radiusMain = dial_radius - dial_space;
     #endif

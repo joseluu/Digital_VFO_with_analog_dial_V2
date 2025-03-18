@@ -60,7 +60,10 @@ void LCD_setup(void)
     lcd.writeCommand(0xC6);
     lcd.writeData(0x02);
   #endif
-
+#ifdef TFT_BL
+  pinMode(TFT_BL, OUTPUT);
+  digitalWrite(TFT_BL, HIGH);
+#endif
 }
 
 
@@ -114,7 +117,7 @@ void DIAL::draw(int32_t freq, int yoff)
   // draw Sub dial ----------------------------------------------------------------
   #ifdef REV_DIAL
   angle = -resoSub * (float)( freq % (TickResoSub*10) ) / (float)TickResoSub ;
-  #else if
+  #else
   angle = resoSub * (float)( freq % (TickResoSub*10) ) / (float)TickResoSub ;
   #endif
 
@@ -172,7 +175,7 @@ void DIAL::draw(int32_t freq, int yoff)
   {
     #ifdef REV_DIAL
     float a = angle + (float)i * resoSub;
-    #else if
+    #else
     float a = angle - (float)i * resoSub;
     #endif
 
@@ -202,7 +205,7 @@ void DIAL::draw(int32_t freq, int yoff)
   // draw Main dial -----------------------------------------------------------------------
   #ifdef REV_DIAL
   angle = -resoMain * (float)( freq % (TickResoMain*10) ) / (float)TickResoMain;
-  #else if
+  #else
   angle = resoMain * (float)( freq % (TickResoMain*10) ) / (float)TickResoMain;
   #endif
 
@@ -261,7 +264,7 @@ void DIAL::draw(int32_t freq, int yoff)
   {
     #ifdef REV_DIAL
     float a = angle + (float)i * resoMain;
-    #else if
+    #else
     float a = angle - (float)i * resoMain;
     #endif
 
@@ -270,7 +273,7 @@ void DIAL::draw(int32_t freq, int yoff)
 
     #ifdef MAIN_UNIT_kHz
       num = abs(freq)/(100000)*100 + i*10;
-    #else if
+    #else
       numf = ( abs(freq)/(TickResoMain*10) + i*0.1f ) * 1e-5 * TickResoMain;
     #endif
 
@@ -278,13 +281,13 @@ void DIAL::draw(int32_t freq, int yoff)
     if(tnMain<=0){
       #ifdef MAIN_UNIT_kHz
       if(num>=0) sp.drawNumber( num, sp.width()>>1, 0);
-      #else if
+      #else
       if(numf>=-0.01) sp.drawFloat( fabs(numf), 1, sp.width()>>1, 0);
       #endif
     }else{
       #ifdef MAIN_UNIT_kHz
       if(num>=0) sp.drawNumber( num, sp.width()>>1, sp.height()-1);
-      #else if
+      #else
       if(numf>=-0.01) sp.drawFloat( fabs(numf), 1, sp.width()>>1, sp.height()-1);
       #endif
     }
@@ -294,13 +297,13 @@ void DIAL::draw(int32_t freq, int yoff)
     if(tnMain<=0){
       #ifdef MAIN_UNIT_kHz
       if(num>=0) sp.drawNumber( num, 0, sp.height()>>1);
-      #else if
+      #else
       if(numf>=-0.01) sp.drawFloat( fabs(numf), 1, 0, sp.height()>>1  );
       #endif
     }else{
       #ifdef MAIN_UNIT_kHz
       if(num>=0) sp.drawNumber( num, sp.width(), sp.height()>>1 );
-      #else if
+      #else
       if(numf>=-0.01) sp.drawFloat( fabs(numf), 1, sp.width(), sp.height()>>1  );
       #endif
     }
@@ -310,13 +313,13 @@ void DIAL::draw(int32_t freq, int yoff)
     if(tnMain<=0){
       #ifdef MAIN_UNIT_kHz
       if(num>=0) sp.drawNumber( num, sp.width(), sp.height()>>1 );
-      #else if
+      #else
       if(numf>=-0.01) sp.drawFloat( fabs(numf), 1, sp.width(), sp.height()>>1  );
       #endif
     }else{
       #ifdef MAIN_UNIT_kHz
       if(num>=0) sp.drawNumber( num,  0, sp.height()>>1  );
-      #else if
+      #else
       if(numf>=-0.01) sp.drawFloat( fabs(numf), 1, 0, sp.height()>>1  );
       #endif
     }
@@ -329,7 +332,7 @@ void DIAL::draw(int32_t freq, int yoff)
 
 
   // Lamp emulation
-  std::uint16_t* rawbuf = (std::uint16_t*)sprites[flip].getBuffer();
+  uint16_t* rawbuf = (uint16_t*)sprites[flip].getBuffer();
   int xr;
   int yr;
   float distance;
@@ -340,7 +343,7 @@ void DIAL::draw(int32_t freq, int yoff)
 
   for (int y = 0; y < sprite_height; y++)
   {
-    std::uint16_t* rawline = &rawbuf[y * lcd.width()];
+    uint16_t* rawline = &rawbuf[y * lcd.width()];
     for (int x = 0; x < lcd.width(); x++)
     {
 

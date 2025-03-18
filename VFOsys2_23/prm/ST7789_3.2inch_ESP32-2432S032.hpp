@@ -4,6 +4,7 @@
 #include <arduino.h>
 #include "nxfont32.h"
 
+#define ST7789
 
 // Lamp emulation
 #define lampX 160  // Lamp position X
@@ -27,16 +28,16 @@
 #define MODE0 // MODE0, MODE1, MODE2
 
 
-// Size of the dial number
+//ダイアル数字のサイズ --------------------------------------------------------
 //Font size of numbers
-#define font_sizex_main 0.70
-#define font_sizey_main 0.60
-#define font_sizex_sub  0.75
-#define font_sizey_sub  0.60
+#define font_sizex_main 0.75
+#define font_sizey_main 0.70
+#define font_sizex_sub  0.90
+#define font_sizey_sub  0.70
 
 
 //メインダイアル1目盛あたりの周波数 ----------------------------------------------------------
-#define  freq_tick_main 10000 // Frequency per tick of Main dial: 10000(10kHz) or 100000(100kHz)
+#define  freq_tick_main 10000  // Frequency per tick of Main dial: 10000(10kHz) or 100000(100kHz)
 #define  freq_tick_sub  1000  // Frequency per tick of Sub  dial: 1000(1kHz) or 10000(10kHz)
 
 
@@ -57,8 +58,8 @@
 
 
 //目盛り間隔---------------------------------------------
-#define tick_pitch_main   9.0  // Tick pitch of main dial
-#define tick_pitch_sub   10.0  // Tick pitch of sub dial
+#define tick_pitch_main  10.0  // Tick pitch of main dial
+#define tick_pitch_sub   12.0  // Tick pitch of sub dial
 
 
 //目盛りの太さ----------------------------------------
@@ -99,13 +100,14 @@
 
 #define TFT_BLACK2  0x0020  //opaque black
 
-#define TFT_BL 4 // backlight 2.2"
+#define TFT_BL 27 // backlight CYD
+
 
 #include <LovyanGFX.hpp>
 class LGFX : public lgfx::LGFX_Device
 {
-  lgfx::Panel_ILI9341 _panel_instance;
-  lgfx::Bus_SPI       _bus_instance;
+  lgfx::Panel_ST7789  _panel_instance;
+  lgfx::Bus_SPI         _bus_instance;
 
 public:
   LGFX(void)
@@ -115,37 +117,37 @@ public:
       cfg.spi_host = VSPI_HOST;     // 使用するSPIを選択  ESP32-S2,C3 : SPI2_HOST or SPI3_HOST / ESP32 : VSPI_HOST or HSPI_HOST
       // ※ ESP-IDFバージョンアップに伴い、VSPI_HOST , HSPI_HOSTの記述は非推奨になるため、エラーが出る場合は代わりにSPI2_HOST , SPI3_HOSTを使用してください。
       cfg.spi_mode = 0;             // SPI通信モードを設定 (0 ~ 3)
-      cfg.freq_write = 40000000;    // 送信時のSPIクロック (最大80MHz, 80MHzを整数で割った値に丸められます)
+      cfg.freq_write = 27000000;    // 送信時のSPIクロック (最大80MHz, 80MHzを整数で割った値に丸められます)
       cfg.freq_read  = 16000000;    // 受信時のSPIクロック
       cfg.spi_3wire  = false;        // 受信をMOSIピンで行う場合はtrueを設定
       cfg.use_lock   = true;        // トランザクションロックを使用する場合はtrueを設定
       cfg.dma_channel = SPI_DMA_CH_AUTO; // 使用するDMAチャンネルを設定 (0=DMA不使用 / 1=1ch / 2=ch / SPI_DMA_CH_AUTO=自動設定)
       // ※ ESP-IDFバージョンアップに伴い、DMAチャンネルはSPI_DMA_CH_AUTO(自動設定)が推奨になりました。1ch,2chの指定は非推奨になります。
-      cfg.pin_sclk = 18;            // SPIのSCLKピン番号を設定
-      cfg.pin_mosi = 23;            // SPIのMOSIピン番号を設定
-      cfg.pin_miso = 12;            // SPIのMISOピン番号を設定 (-1 = disable)
-      cfg.pin_dc   = 32;            // SPIのD/Cピン番号を設定  (-1 = disable)
+      cfg.pin_sclk = 14;            // SPIのSCLKピン番号を設定
+      cfg.pin_mosi = 13;            // SPIのMOSIピン番号を設定
+      cfg.pin_miso = -1;            // SPIのMISOピン番号を設定 (-1 = disable)
+      cfg.pin_dc   = 2;            // SPIのD/Cピン番号を設定  (-1 = disable)
       _bus_instance.config(cfg);    // 設定値をバスに反映します。
       _panel_instance.setBus(&_bus_instance);      // バスをパネルにセットします。
     }
 
     { // 表示パネル制御の設定を行います。
       auto cfg = _panel_instance.config();    // 表示パネル設定用の構造体を取得します。
-      cfg.pin_cs           =    27;  // CSが接続されているピン番号   (-1 = disable)
-      cfg.pin_rst          =     5;  // RSTが接続されているピン番号  (-1 = disable)
+      cfg.pin_cs           =    15;  // CSが接続されているピン番号   (-1 = disable)
+      cfg.pin_rst          =    -1;  // RSTが接続されているピン番号  (-1 = disable)
       cfg.pin_busy         =    -1;  // BUSYが接続されているピン番号 (-1 = disable)
 
       // ※ 以下の設定値はパネル毎に一般的な初期値が設定されていますので、不明な項目はコメントアウトして試してみてください。
 
-      cfg.panel_width      =   240;//128;  // 実際に表示可能な幅
-      cfg.panel_height     =   320;//160;  // 実際に表示可能な高さ
+      cfg.panel_width      =   240;  // 実際に表示可能な幅
+      cfg.panel_height     =   320;  // 実際に表示可能な高さ
       cfg.offset_x         =     0;  // パネルのX方向オフセット量
       cfg.offset_y         =     0;  // パネルのY方向オフセット量
-      cfg.offset_rotation  =     3;  // 回転方向の値のオフセット 0~7 (4~7は上下反転)
+      cfg.offset_rotation  =     1;  // 回転方向の値のオフセット 0~7 (4~7は上下反転)
       cfg.dummy_read_pixel =     8;  // ピクセル読出し前のダミーリードのビット数
       cfg.dummy_read_bits  =     1;  // ピクセル以外のデータ読出し前のダミーリードのビット数
       cfg.readable         = false;  // データ読出しが可能な場合 trueに設定
-      cfg.invert           = false;  // パネルの明暗が反転してしまう場合 trueに設定
+      cfg.invert           =  true;  // パネルの明暗が反転してしまう場合 trueに設定
       cfg.rgb_order        = false;  // パネルの赤と青が入れ替わってしまう場合 trueに設定
       cfg.dlen_16bit       = false;  // 16bitパラレルやSPIでデータ長を16bit単位で送信するパネルの場合 trueに設定, false: 8bit
       cfg.bus_shared       = false;  // SDカードとバスを共有している場合 trueに設定(drawJpgFile等でバス制御を行います)
@@ -159,7 +161,5 @@ public:
     setPanel(&_panel_instance); // 使用するパネルをセットします。
   }
 };
-
-
 
 #endif
