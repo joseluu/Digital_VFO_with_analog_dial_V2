@@ -225,7 +225,7 @@ void loop(void)
     dial.draw(Disp_frq, yoff);
 
 
-    // Draw digital frequency display
+    // Draw digital frequency display using the nixie fonts (nxfont)
     #ifndef Digtal_Freq_OFF
       #ifdef MODE0
       int xdf=-2, ydf=0;// position
@@ -282,6 +282,7 @@ void loop(void)
     //
     //
   
+    // use double buffering when drawing the sprite
     sprites[flip].pushSprite(&lcd, 0, yoff);
     flip = !flip;
   }

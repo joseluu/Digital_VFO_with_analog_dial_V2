@@ -135,7 +135,7 @@ void DIAL::draw(int32_t freq, int yoff)
     sp.pushRotateZoomWithAA(&sprites[flip], xc, yc - yoff, a+aoff, zoom_x, zoom_y, 0);
   }
 
-  // draw Sub number ----------------------------------------------------------------
+  // draw Sub dial numbers ----------------------------------------------------------------
   zoom_x = font_sizex_sub;
   zoom_y = font_sizey_sub;
   sp.createSprite(60, 28);
@@ -223,8 +223,7 @@ void DIAL::draw(int32_t freq, int yoff)
   }
 
 
-
-  // draw Main number ----------------------------------------------------------------------
+  // draw Main dial numbers ----------------------------------------------------------------------
   zoom_x = font_sizex_main;
   zoom_y = font_sizey_main;
   sp.createSprite(85, 28);
