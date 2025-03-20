@@ -28,7 +28,7 @@
 #define MODE0 // MODE0, MODE1, MODE2
 
 
-//ダイアル数字のサイズ --------------------------------------------------------
+// Dial Number Size ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //Font size of numbers
 #define font_sizex_main 0.5
 #define font_sizey_main 0.45
@@ -37,33 +37,33 @@
 
 
 
-//メインダイアル1目盛あたりの周波数 ----------------------------------------------------------
+// Frequency per scale of 1 main dial -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #define  freq_tick_main 10000 // Frequency per tick of Main dial: 10000(10kHz) or 100000(100kHz)
 #define  freq_tick_sub  1000  // Frequency per tick of Sub  dial: 1000(1kHz) or 10000(10kHz)
 
 
 
-//ダイアル表示位置-----------------------------------------------
+// Dial display position-----------------------------------------------------------------------------------------
 //Position of dial display
 #define center_offset  0
 #define top_position   30
 #define top_margin     10
 
 
-//ダイアル半径---------------------------------------------------
-#define dial_radius 150.0  //Dial radius (if 10000, Linear scale)
+// Dial radius ----
+#define dial_radius 150.0  // Dial radius (if 10000, Linear scale)
 
 
-//メイン，サブダイアル間の間隔------------------------------
+// Spacing between main and subdials---------------------------------------------------------------------------------------
 #define dial_space  35.0  // Space bitween Main and Sub dial
 
 
-//目盛り間隔---------------------------------------------
+// Tick ​​interval----------------------------------
 #define tick_pitch_main  6.0  // Tick pitch of main dial
 #define tick_pitch_sub   7.0  // Tick pitch of sub dial
 
 
-//目盛りの太さ----------------------------------------
+// Scale thickness----
 #define tw_main1   2.0  // Tick width of main(1)
 #define tw_main5   3.5  // Tick width of main(5)
 #define tw_main10  4.0  // Tick width of main(10)
@@ -72,7 +72,7 @@
 #define tw_sub10   4.0  // Tick width of sub(10)
 
 
-//目盛りの長さ----------------------------------------
+// Tick ​​length--------------------------------
 #define tl_main1    4.0  // Tick length of main(1)
 #define tl_main5   10.0  // Tick length of main(5)
 #define tl_main10  12.0  // Tick length of main(10)
@@ -81,12 +81,12 @@
 #define tl_sub10   12.0  // Tick length of sub(10)
 
 
-//目盛り・数字間のスペース-------------------------------------------
+// Space between scales and numbers---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #define TNCL_main  15.0  // Space bitween Number and Tick (Main dial)
 #define TNCL_sub   15.0  // Space bitween Number and Tick (Sub dial)
 
 
-// 指針幅，長さ--------------------------
+// Guideline width, length---------------
 #define DP_width   1.0  // Needle width
 #define DP_len   200.0  // Needle length
 
@@ -94,12 +94,12 @@
 #define TickMainCol TFT_CYAN
 #define TickSubCol  TFT_GREEN
 #define NumMainCol  TFT_WHITE
-#define NumSubCol   TFT_GOLD //TFT_ORANGE
+#define NumSubCol   TFT_GOLD // TFT_ORANGE
 #define PointerCol  TFT_RED
-#define BGCol       TFT_BLACK //0x80FF80U
+#define BGCol       TFT_BLACK // 0x80FF80U
 #define DialBGCol   BGCol
 
-#define TFT_BLACK2  0x0020  //opaque black
+#define TFT_BLACK2  0x0020  // opaque black
 
 
 
@@ -113,53 +113,53 @@ class LGFX : public lgfx::LGFX_Device
 public:
   LGFX(void)
   {
-    { // // SPIバスの設定
-      auto cfg = _bus_instance.config();    // バス設定用の構造体を取得します。
-      cfg.spi_host = VSPI_HOST;     // 使用するSPIを選択  ESP32-S2,C3 : SPI2_HOST or SPI3_HOST / ESP32 : VSPI_HOST or HSPI_HOST
-      // ※ ESP-IDFバージョンアップに伴い、VSPI_HOST , HSPI_HOSTの記述は非推奨になるため、エラーが出る場合は代わりにSPI2_HOST , SPI3_HOSTを使用してください。
-      cfg.spi_mode = 0;             // SPI通信モードを設定 (0 ~ 3)
-      cfg.freq_write = 27000000;    // 送信時のSPIクロック (最大80MHz, 80MHzを整数で割った値に丸められます)
-      cfg.freq_read  = 16000000;    // 受信時のSPIクロック
-      cfg.spi_3wire  = false;        // 受信をMOSIピンで行う場合はtrueを設定
-      cfg.use_lock   = true;        // トランザクションロックを使用する場合はtrueを設定
-      cfg.dma_channel = SPI_DMA_CH_AUTO; // 使用するDMAチャンネルを設定 (0=DMA不使用 / 1=1ch / 2=ch / SPI_DMA_CH_AUTO=自動設定)
-      // ※ ESP-IDFバージョンアップに伴い、DMAチャンネルはSPI_DMA_CH_AUTO(自動設定)が推奨になりました。1ch,2chの指定は非推奨になります。
-      cfg.pin_sclk = 18;            // SPIのSCLKピン番号を設定
-      cfg.pin_mosi = 23;            // SPIのMOSIピン番号を設定
-      cfg.pin_miso = -1;            // SPIのMISOピン番号を設定 (-1 = disable)
-      cfg.pin_dc   = 2;            // SPIのD/Cピン番号を設定  (-1 = disable)
-      _bus_instance.config(cfg);    // 設定値をバスに反映します。
-      _panel_instance.setBus(&_bus_instance);      // バスをパネルにセットします。
+    { // // Configuring the SPI bus
+      auto cfg = _bus_instance.config();    // Gets the structure for bus configuration.
+      cfg.spi_host = VSPI_HOST;     // Select the SPI to use ESP32-S2,C3: SPI2_HOST or SPI3_HOST / ESP32: VSPI_HOST or HSPI_HOST
+      // * Due to the ESP-IDF version upgrade, descriptions of VSPI_HOST and HSPI_HOST will be deprecated, so if an error occurs, use SPI2_HOST and SPI3_HOST instead.
+      cfg.spi_mode = 0;             // Set SPI communication mode (0 to 3)
+      cfg.freq_write = 27000000;    // SPI clock at transmission (rounded to 80MHz, 80MHz divided by an integer)
+      cfg.freq_read  = 16000000;    // SPI clock when receiving
+      cfg.spi_3wire  = false;        // Set true if receiving is performed using the MOSI pin.
+      cfg.use_lock   = true;        // Set to true if transaction lock is used
+      cfg.dma_channel = SPI_DMA_CH_AUTO; // Set the DMA channel to use (0=DMA not used / 1=1ch / 2=ch / SPI_DMA_CH_AUTO=automatically set)
+      // * Due to the ESP-IDF version upgrade, SPI_DMA_CH_AUTO (automatic setting) is now recommended for DMA channels. 1ch and 2ch specification is deprecated.
+      cfg.pin_sclk = 18;            // Set SCLK pin number for SPI
+      cfg.pin_mosi = 23;            // Set the MOSI pin number for SPI
+      cfg.pin_miso = -1;            // Set the MISO pin number for SPI (-1 = disable)
+      cfg.pin_dc   = 2;            // Set the D/C pin number for SPI (-1 = disable)
+      _bus_instance.config(cfg);    // The setting value is reflected on the bus.
+      _panel_instance.setBus(&_bus_instance);      // Place the bus on the panel.
     }
 
-    { // 表示パネル制御の設定を行います。
-      auto cfg = _panel_instance.config();    // 表示パネル設定用の構造体を取得します。
-      cfg.pin_cs           =    5;  // CSが接続されているピン番号   (-1 = disable)
-      cfg.pin_rst          =    15;  // RSTが接続されているピン番号  (-1 = disable)
-      cfg.pin_busy         =    -1;  // BUSYが接続されているピン番号 (-1 = disable)
+    { // Sets the display panel control.
+      auto cfg = _panel_instance.config();    // Gets the structure for display panel settings.
+      cfg.pin_cs           =    5;  // Pin number to which CS is connected (-1 = disable)
+      cfg.pin_rst          =    15;  // Pin number to which RST is connected (-1 = disable)
+      cfg.pin_busy         =    -1;  // Pin number to which BUSY is connected (-1 = disable)
 
-      // ※ 以下の設定値はパネル毎に一般的な初期値が設定されていますので、不明な項目はコメントアウトして試してみてください。
+      // *The following settings have a general initial value set for each panel, so please comment out any unknown items and try it out.
 
-      cfg.panel_width      =   128;  // 実際に表示可能な幅
-      cfg.panel_height     =   160;  // 実際に表示可能な高さ
-      cfg.offset_x         =     0;  // パネルのX方向オフセット量
-      cfg.offset_y         =     0;  // パネルのY方向オフセット量
-      cfg.offset_rotation  =     3;  // 回転方向の値のオフセット 0~7 (4~7は上下反転)
-      cfg.dummy_read_pixel =     8;  // ピクセル読出し前のダミーリードのビット数
-      cfg.dummy_read_bits  =     1;  // ピクセル以外のデータ読出し前のダミーリードのビット数
-      cfg.readable         = false;  // データ読出しが可能な場合 trueに設定
-      cfg.invert           = false;  // パネルの明暗が反転してしまう場合 trueに設定
-      cfg.rgb_order        =  true;  // パネルの赤と青が入れ替わってしまう場合 trueに設定
-      cfg.dlen_16bit       = false;  // 16bitパラレルやSPIでデータ長を16bit単位で送信するパネルの場合 trueに設定, false: 8bit
-      cfg.bus_shared       = false;  // SDカードとバスを共有している場合 trueに設定(drawJpgFile等でバス制御を行います)
+      cfg.panel_width      =   128;  // Actual displayable width
+      cfg.panel_height     =   160;  // The actual height that can be displayed
+      cfg.offset_x         =     0;  // X-direction offset amount of panel
+      cfg.offset_y         =     0;  // Panel Y-direction offset amount
+      cfg.offset_rotation  =     3;  // Offset of the value in the direction of rotation: 0~7 (4~7 inverts up and down)
+      cfg.dummy_read_pixel =     8;  // Number of bits in dummy read before pixel read
+      cfg.dummy_read_bits  =     1;  // Number of bits in dummy read before reading data other than pixels
+      cfg.readable         = false;  // Set to true if data read is possible
+      cfg.invert           = false;  // Set to true if the panel light and darkness are reversed
+      cfg.rgb_order        =  true;  // Set to true if the red and blue panels are swapped
+      cfg.dlen_16bit       = false;  // For panels that send data lengths in 16-bit parallel or SPI, set to true, false: 8-bit
+      cfg.bus_shared       = false;  // If the bus is shared with the SD card, set to true (bus control is performed using drawJpgFile, etc.)
 
-      // 以下はST7735やILI9163のようにピクセル数が可変のドライバで表示がずれる場合にのみ設定してください。
-      cfg.memory_width     =   128;  // ドライバICがサポートしている最大の幅
-      cfg.memory_height    =   160;  // ドライバICがサポートしている最大の高さ
+      // Please set the following only if the display is shifted by a driver with variable pixel counts, such as ST7735 or ILI9163.
+      cfg.memory_width     =   128;  // The maximum width supported by the driver IC
+      cfg.memory_height    =   160;  // The maximum height supported by the driver IC
 
       _panel_instance.config(cfg);
     }   
-    setPanel(&_panel_instance); // 使用するパネルをセットします。
+    setPanel(&_panel_instance); // Set the panel you want to use.
   }
 };
 #endif
